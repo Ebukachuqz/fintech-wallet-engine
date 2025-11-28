@@ -3,14 +3,12 @@ FROM maven:3.9-eclipse-temurin-25-alpine AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-
 # Build the JAR, skipping tests to save time during deployment
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create the runtime image
-FROM eclipse-temurin:25-jre-alpine
+FROM openjdk:25-ea-21-jdk-slim
 WORKDIR /app
-
 # Copy the built JAR from the previous stage
 COPY --from=build /app/target/*.jar app.jar
 
